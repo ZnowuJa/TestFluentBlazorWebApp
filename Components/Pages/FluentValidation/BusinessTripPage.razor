@@ -11,10 +11,12 @@
     <FluentTextField @bind-Value=@formItem.EmployeeName/>
     <FluentValidationMessage For="() => formItem.EmployeeName"/>
     
-        <MileageRegisterComponent MileageRegister="formItem.MileageRegister"
+        <MileageRegisterComponent MileageRegister="@formItem.MileageRegister"
             EmployeeLongName="@formItem.EmployeeName"
             EmployeeEmpId="123"
-            Disabled="false" />
+            Disabled="false" 
+            
+            />
 
     <p></p>
     Jakiś tekst co gdzie jest

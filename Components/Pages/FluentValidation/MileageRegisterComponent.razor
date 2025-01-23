@@ -66,7 +66,7 @@
             <span>@(MileageRegister.Entries.Sum(e => e.Mileage)*MileageRegister.MileageAllowanceRate)</span>
         </span>
     </div>
-    <FluentValidationSummary class="validation-error" />
+    @* <FluentValidationSummary class="validation-error" /> *@
     <button type="submit">ValidateComponentManualy</button>
 </EditForm>
 
@@ -78,6 +78,8 @@
     [Parameter] public decimal? TotalMileage { get; set; }
     [Parameter] public decimal? TotalValue { get; set; }
     [Parameter] public bool Disabled { get; set; } = false;
+    // [Parameter] public FluentValidationValidator ValidatorForForm { get; set; }
+
     private EditContext _editContext;
     private FluentValidationValidator? _fluentValidationValidatorM;
 
