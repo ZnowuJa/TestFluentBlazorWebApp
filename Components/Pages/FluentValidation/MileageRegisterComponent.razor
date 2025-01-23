@@ -66,7 +66,7 @@
             <span>@(MileageRegister.Entries.Sum(e => e.Mileage)*MileageRegister.MileageAllowanceRate)</span>
         </span>
     </div>
-    <FluentValidationSummary />
+    <FluentValidationSummary class="validation-error" />
     <button type="submit">ValidateComponentManualy</button>
 </EditForm>
 
@@ -89,6 +89,8 @@
         MileageRegister.TotalValue = TotalValue;
         if(MileageRegister.Entries.Count == 0){
             MileageRegister.Entries = new List<MileageRegisterEntry>();
+            var newEntry = new MileageRegisterEntry();
+            MileageRegister.Entries.Add(newEntry);
         }
         _editContext = new EditContext(MileageRegister);
 
