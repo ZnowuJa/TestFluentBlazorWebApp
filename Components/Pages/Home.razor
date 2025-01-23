@@ -1,0 +1,74 @@
+﻿@page "/"
+@inject NavigationManager _navigationManager
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, world!</h1>
+
+
+<FluentCard Style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border-radius: 10px; overflow: hidden;">
+    <FluentStack Orientation="Orientation.Vertical"
+                 HorizontalAlignment="HorizontalAlignment.Center"
+                 VerticalAlignment="VerticalAlignment.Center"
+                 Spacing="10px"
+                 Style="padding: 20px;">
+        @(new Icons.Regular.Size24.Desktop().ToMarkup("48px"))
+        <h4 style="margin: 0;">Files</h4>
+        <FluentButton BackgroundColor="var(--accent-fill-rest)"
+                      Color="var(--neutral-fill-rest)"
+                      OnClick="@(()=>_navigationManager.NavigateTo("/files6"))">
+            Filesy
+        </FluentButton>
+    </FluentStack>
+</FluentCard>
+
+
+<div>
+    <FluentStack Orientation="Orientation.Vertical"
+                 HorizontalAlignment="HorizontalAlignment.Center"
+                 VerticalAlignment="VerticalAlignment.Center"
+                 Spacing="10px"
+                 Style="padding: 20px;">
+        @(new Icons.Regular.Size24.Desktop().ToMarkup("48px"))
+        <h4 style="margin: 0;">Mileage</h4>
+        <FluentButton BackgroundColor="var(--accent-fill-rest)"
+                      Color="var(--neutral-fill-rest)"
+                      OnClick="@(()=>_navigationManager.NavigateTo("/delegacja"))">
+            Filesy
+        </FluentButton>
+    </FluentStack>
+</div>
+    <div>
+    <FluentStack Orientation="Orientation.Vertical"
+                 HorizontalAlignment="HorizontalAlignment.Center"
+                 VerticalAlignment="VerticalAlignment.Center"
+                 Spacing="10px"
+                 Style="padding: 20px;">
+        @(new Icons.Regular.Size24.Desktop().ToMarkup("48px"))
+        <h4 style="margin: 0;">JSON</h4>
+        <FluentButton BackgroundColor="var(--accent-fill-rest)"
+                      Color="var(--neutral-fill-rest)"
+                      OnClick="@(()=>_navigationManager.NavigateTo("/json"))">
+            Filesy
+        </FluentButton>
+    </FluentStack>
+    </div>
+    <div>
+    <FluentStack Orientation="Orientation.Vertical"
+                 HorizontalAlignment="HorizontalAlignment.Center"
+                 VerticalAlignment="VerticalAlignment.Center"
+                 Spacing="10px"
+                 Style="padding: 20px;">
+        @(new Icons.Regular.Size24.Desktop().ToMarkup("48px"))
+        <h4 style="margin: 0;">oninput</h4>
+        <FluentButton BackgroundColor="var(--accent-fill-rest)"
+                      Color="var(--neutral-fill-rest)"
+                      OnClick="@(()=>_navigationManager.NavigateTo("/oninput"))">
+            Filesy
+        </FluentButton>
+    </FluentStack>
+    </div>
+
+<FluentCard Style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border-radius: 10px; overflow: hidden;">
+    
+</FluentCard>
+Welcome to your new Fluent Blazor app.

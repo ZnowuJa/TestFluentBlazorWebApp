@@ -1,0 +1,204 @@
+﻿@page "/styles"
+<h3>styles</h3>
+
+<h4>Selected Option</h4>
+<span>
+<FluentSelect @bind-Value="@selectValue3" TOption="string" Disabled = "true">
+    <FluentOption Value="Option One">Option One</FluentOption>
+    <FluentOption Value="Option Two" Selected="true">Option Two</FluentOption>
+    <FluentOption Value="Option Three">Option Three</FluentOption>
+    <FluentOption Value="Option Four">Option Four</FluentOption>
+</FluentSelect>
+    <FluentTextField @bind-Value="@textFieldValue" ReadOnly="true" />
+</span>
+<p></p>
+<p></p>
+<p></p>
+<div >
+    <FluentSelect Items=@stringOptions2
+    TOption="Option<string>"
+    Multiple=false
+    OptionText="@(i => i.Text)"
+    OptionValue="@(i => i.Value)"
+    OptionSelected="@(i => i.Selected)"
+    OptionDisabled="@(i => int.Parse(i.Value!) > 6)"
+    @bind-SelectedOptions="@selectedStrings" />
+</div>
+
+<h2>Colors</h2>
+<table>
+    <tr>
+        <th>Color</th>
+        <th>Variable</th>
+    </tr>
+    <tr>
+        <td style="background-color: var(--neutral-fill-secondary-rest);">var(--neutral-fill-secondary-rest)</td>
+        <td>var(--neutral-fill-secondary-rest)</td>
+    </tr>
+    <tr>
+        <td style="background-color: color-mix(in srgb, white 30%, var(--accent-fill-rest) 70%);">inherit</td>
+        <td>inherit</td>
+    </tr>
+    <tr>
+        <td style="background-color: var(--accent-fill-rest);">var(--accent-fill-rest)</td>
+        <td>var(--accent-fill-rest)</td>
+    </tr>
+    <tr>
+        <td style="background-color: var(--neutral-foreground-rest);">var(--neutral-foreground-rest)</td>
+        <td>var(--neutral-foreground-rest)</td>
+    </tr>
+    <tr>
+        <td style="background-color: var(--datagrid-hover-color, var(--neutral-fill-stealth-hover));">var(--datagrid-hover-color, var(--neutral-fill-stealth-hover))</td>
+        <td>var(--datagrid-hover-color, var(--neutral-fill-stealth-hover))</td>
+    </tr>
+    <tr>
+        <td style="background-color: var(--neutral-stroke-focus);">var(--neutral-stroke-focus)</td>
+        <td>var(--neutral-stroke-focus)</td>
+    </tr>
+    <tr>
+        <td style="background-color: lighten($accent-fill-rest, 20%);;">lighten($accent-fill-rest, 20%);</td>
+        <td>rgba(var(--accent-fill-rest), 0.7); ;</td>
+    </tr>
+    <tr>
+        <td style="background-color: rgb(73, 72, 71);">rgb(73, 72, 71)</td>
+        <td>rgb(73, 72, 71)</td>
+    </tr>
+    <tr>
+        <td style="background-color: var(--error);">var(--error)</td>
+        <td>var(--error)</td>
+    </tr>
+    <tr>
+        <td style="background-color: var(--accent-fill-lighter);">lightgray</td>
+        <td>var(--accent-fill-lighter);</td>
+    </tr>
+</table>
+
+<h2>Background Colors</h2>
+<table>
+    <tr>
+        <th>Background Color</th>
+        <th>Variable</th>
+    </tr>
+    <tr>
+        <td style="background-color: var(--neutral-fill-secondary-rest);">var(--neutral-fill-secondary-rest)</td>
+        <td>var(--neutral-fill-secondary-rest)</td>
+    </tr>
+    <tr>
+        <td style="background-color: var(--neutral-fill-stealth-hover);">var(--neutral-fill-stealth-hover)</td>
+        <td>var(--neutral-fill-stealth-hover)</td>
+    </tr>
+    <tr>
+        <td style="background-color: var(--accent-fill-rest);">var(--accent-fill-rest)</td>
+        <td>var(--accent-fill-rest)</td>
+    </tr>
+    <tr>
+        <td style="background-color: var(--neutral-layer-1);">var(--neutral-layer-1)</td>
+        <td>var(--neutral-layer-1)</td>
+    </tr>
+    <tr>
+        <td style="background-color: var(--neutral-fill-hover);">var(--neutral-fill-hover)</td>
+        <td>var(--neutral-fill-hover)</td>
+    </tr>
+    <tr>
+        <td style="background-color: var(--neutral-layer-2);">var(--neutral-layer-2)</td>
+        <td>var(--neutral-layer-2)</td>
+    </tr>
+    <tr>
+        <td style="background-color: var(--neutral-layer-floating);">var(--neutral-layer-floating)</td>
+        <td>var(--neutral-layer-floating)</td>
+    </tr>
+</table>
+
+<h2>Variables</h2>
+<table>
+    <tr>
+        <th>Variable</th>
+        <th>Name</th>
+    </tr>
+    <tr>
+        <td>var(--neutral-fill-secondary-rest)</td>
+        <td>var(--neutral-fill-secondary-rest)</td>
+    </tr>
+    <tr>
+        <td>var(--accent-fill-rest)</td>
+        <td>var(--accent-fill-rest)</td>
+    </tr>
+    <tr>
+        <td>var(--neutral-foreground-rest)</td>
+        <td>var(--neutral-foreground-rest)</td>
+    </tr>
+    <tr>
+        <td>var(--datagrid-hover-color, var(--neutral-fill-stealth-hover))</td>
+        <td>var(--datagrid-hover-color, var(--neutral-fill-stealth-hover))</td>
+    </tr>
+    <tr>
+        <td>var(--neutral-stroke-focus)</td>
+        <td>var(--neutral-stroke-focus)</td>
+    </tr>
+    <tr>
+        <td>var(--foreground-on-accent-rest)</td>
+        <td>var(--foreground-on-accent-rest)</td>
+    </tr>
+    <tr>
+        <td>var(--fill-color)</td>
+        <td>var(--fill-color)</td>
+    </tr>
+    <tr>
+        <td>var(--neutral-fill-hover)</td>
+        <td>var(--neutral-fill-hover)</td>
+    </tr>
+    <tr>
+        <td>var(--neutral-layer-2)</td>
+        <td>var(--neutral-layer-2)</td>
+    </tr>
+    <tr>
+        <td>var(--neutral-layer-floating)</td>
+        <td>var(--neutral-layer-floating)</td>
+    </tr>
+</table>
+@code {
+    string textFieldValue = "test of disabled text";
+    string? selectValue1, selectValue2, selectValue3;
+    IEnumerable<Option<string>>? selectedStrings;
+    static List<Option<string>> stringOptions2 = new()
+    {
+        { new Option<string> { Value = "1", Text = "One" } },
+        { new Option<string> { Value = "2", Text = "Two", Selected = true } },
+        { new Option<string> { Value = "3", Text = "Three" } },
+        { new Option<string> { Value = "4", Text = "Four" } },
+        { new Option<string> { Value = "5", Text = "Five", Selected = true } },
+        { new Option<string> { Value = "6", Text = "Six" } },
+        { new Option<string> { Value = "7", Text = "Seven" } },
+        { new Option<string> { Value = "8", Text = "Eight", Selected = true } },
+        { new Option<string> { Value = "9", Text = "Nine" } }
+    };
+
+}
+<style>
+    .selected .disabled {
+        color: black !important;
+        opacity: 1 !important;
+    }
+
+    
+
+    .selected-value {
+        color: black !important;
+        opacity: 1 !important;
+    }
+    table {
+        width: 50%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+</style>

@@ -1,0 +1,296 @@
+﻿@page "/validation"
+
+
+@using System.Text.Json
+@using TestFluentBlazorWebApp.Components.Pages.Validation
+
+<h3>FluentAutoCompleteComplexType</h3>
+<table class="fluent-table">
+    <caption class="fluent-caption">
+        Pozostałe rachunki i bilety
+    </caption>
+    <thead class="fluent-thead">
+        <tr>
+            <th style="width: 50px;">Lp.</th>
+            <th style="width: 125px;">Kwota brutto</th>
+            <th style="width: 150px;">Uzasadnienie</th>
+            <th style="width: 30px;"></th>
+            <th style="width: 120px;">Dekretacja</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var bill in bills)
+        {
+            <tr class="fluent-row">
+                <td>@bill.Id</td>
+                <td>
+                    <FluentNumberField Min="0"
+                    @bind-Value:get="@bill.Amount"
+                    @bind-Value:set="(value => HandleBillChanged(bill, value))"
+                    width="125px" />
+                </td>
+                <td>
+                    <FluentCombobox Items="@_billReasons"
+                    @bind-Value="@bill.Reason"
+                    AllowFreeform="false"
+                    Placeholder="Wybierz lub wprowadź..."
+                    Width="150px" />
+                </td>
+                <td>
+
+
+                </td>
+                
+                <td>
+
+                    <PostingEditComponent Posting="@bill.Posting.First()" Locations="_locations" CostCenters="_costCenters" GLAccounts="_glAccounts" VATRates="_vatRates" />
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<FluentButton Id="addBill" IconEnd="@(new Icons.Regular.Size20.Add())" OnClick="@(() => AddBill())" />
+<FluentTooltip Anchor="addBill" HideTooltipOnCursorLeave="true" Position=TooltipPosition.Right Delay=50>Dodaj rachunek lub bilet</FluentTooltip>
+
+
+@code {
+    // @bind-SelectedOption:after="OnLocationChanged"
+    private Bill4 bill { get; set; }
+    private List<Bill4> bills { get; set; } = new();
+    private string? serializedBill { get; set; }
+
+    private IEnumerable<Location> _locations { get; set; } = SeedData.GetLocations();
+    private IEnumerable<CostCenter> _costCenters { get; set; } = SeedData.GetCostCenters();
+    private IEnumerable<GLAccount> _glAccounts { get; set; } = SeedData.GetGLAccounts();
+    private IEnumerable<VATRate> _vatRates { get; set; } = SeedData.GetVATRates();
+    private IQueryable<string> _billReasons = Enum.GetValues(typeof(BillReasons))
+    .Cast<BillReasons>().Select(c => c.ToString()).AsQueryable();
+    private List<string> filteredBillReasons = new List<string>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        filteredBillReasons = _billReasons.ToList();
+    }
+    private void OnLocationSearch(OptionsSearchEventArgs<Location> e)
+    {
+        e.Items = _locations.Where(g => g.Name.Contains(e.Text, StringComparison.OrdinalIgnoreCase) 
+        || g.SapNumber.Contains(e.Text, StringComparison.OrdinalIgnoreCase));
+
+    }
+
+    private void HandleInput(string currentValue)
+    {
+        // var currentValue = e.Value.ToString();
+        filteredBillReasons = _billReasons
+            .Where(reason => reason.Contains(currentValue, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        StateHasChanged();
+    }
+    private async Task AddBill()
+    {
+        bills.Add(new Bill4()
+            {
+                Id = bills.Count() + 1,
+                Posting = new List<InvoiceMapping> { new InvoiceMapping() }
+            });
+    }
+
+    private async Task HandleBillChanged(Bill4 bill, decimal v)
+    {
+        bill.Amount = v;
+    }
+
+    // private void HandleLocationChanged(Bill3 bill, OptionsChangedEventArgs<Location> args)
+    // {
+    //     var selectedLocation = args.SelectedOption;
+    //     if (bill.InvoiceMapping.FirstOrDefault() != null)
+    //     {
+    //         bill.InvoiceMapping.First().Location = new List<Location> { selectedLocation };
+    //     }
+    // }
+}
+
+
+<style>
+    div {
+        /*flex-shrink: 0; /* Prevent shrinking of elements */
+    }
+    /* Ensure consistent height and padding for all tables */
+    table.fluent-table, .posting-table {
+        border-collapse: collapse;
+    }
+
+        table.fluent-table td, .posting-table td {
+            padding: 5px; /* Ensure consistent padding */
+            vertical-align: middle; /* Align content vertically */
+        }
+
+        table.fluent-table tr, .posting-table tr {
+            height: auto; /* Allow rows to shrink to fit content */
+        }
+
+    /* Remove extra margins or paddings in PostingEditComponent */
+    .posting-table {
+        margin: 0;
+        padding: 0;
+    }
+
+        /* If necessary, adjust input elements */
+        .posting-table input, .posting-table select {
+            height: auto; /* Remove default browser styling that adds height */
+            margin: 0; /* Remove unnecessary margins */
+        }
+
+        /* Align Fluent UI controls */
+        .fluent-row div, .posting-table td div {
+            display: flex;
+            align-items: center;
+            gap: 5px; /* Adjust spacing as needed */
+        }
+    .flex-container {
+        display: flex; /* Enables horizontal alignment */
+        align-items: center; /* Vertically centers items */
+        gap: 10px; /* Adds space between elements */
+        flex-wrap: wrap; /* Wraps to the next line if there's not enough space */
+    }
+
+        .flex-container > * {
+            flex-shrink: 0; /* Prevents items from shrinking */
+            margin: 0; /* Optional: Resets any margin */
+        }
+
+    .form-section {
+        display: flex;
+        flex-wrap: wrap; /* Allows wrapping if content overflows */
+        gap: 15px; /* Spacing between child divs */
+        margin-bottom: 15px;
+    }
+
+        .form-section > div {
+            display: flex;
+            align-items: center; /* Vertically centers content within each div */
+            gap: 10px; /* Spacing between elements inside the div */
+        }
+
+    .fluent-grid-item {
+        flex-shrink: 0; /* Prevents shrinking of elements */
+    }
+
+    .autocomplete-container {
+        display: flex;
+        align-items: center;
+        gap: 10px; /* Adjust spacing as needed */
+    }
+
+        .autocomplete-container .fluent-autocomplete {
+            display: flex;
+            flex-direction: row; /* Forces label and control to align horizontally */
+            align-items: center;
+        }
+
+    table {
+        border-collapse: collapse; /* Optional: For a cleaner look */
+        /*width: 750px; /* Optional: Adjust to fit your container */
+    }
+
+    th, td {
+        padding: 5px; /* Adds padding inside each cell */
+        text-align: left; /* Optional: Align text to the left */
+    }
+
+        td:first-child, th:first-child {
+            padding-left: 0; /* Removes padding on the left of the first cell */
+        }
+
+    tr:first-child .od-column {
+        border-top-left-radius: 10px;
+    }
+
+    tr:first-child .do-column {
+        border-top-right-radius: 10px;
+    }
+
+    tr:last-child .od-column {
+        border-bottom-left-radius: 10px;
+    }
+
+    tr:last-child .do-column {
+        border-bottom-right-radius: 10px;
+    }
+
+    .info-table {
+        width: 650px;
+        margin-bottom: 10px;
+    }
+
+        .info-table td {
+            padding: 10px;
+        }
+
+    .fluent-grid {
+        display: flex;
+        gap: 10px; /* Adjust the gap as needed */
+    }
+
+    .fluent-grid-item {
+        display: flex;
+        flex-direction: row;
+        gap: 10px; /* Adjust the gap between date and time pickers */
+    }
+
+    .custom-grid-item {
+        width: 150px;
+    }
+
+    .bold-label {
+        font-weight: bold;
+    }
+
+    .validation-error {
+        color: red;
+        margin-bottom: 10px;
+    }
+
+
+    .fluent-caption {
+        caption-side: top;
+        text-align: left;
+        font-size: 1em;
+        font-weight: bold;
+        padding: 5px;
+        background-color: dimgrey;
+        color: white;
+    }
+
+    .fluent-thead {
+        background-color: lightgrey;
+        color: dimgray;
+    }
+
+        .fluent-thead th {
+            padding: 5px;
+            text-align: left;
+        }
+
+    .fluent-row {
+    }
+
+        .fluent-row td {
+            padding: 5px;
+        }
+
+        .fluent-row div {
+            display: flex;
+            align-items: center;
+        }
+
+            .fluent-row div FluentButton {
+                margin-right: 5px;
+            }
+</style>
+<script>
+    function triggerFileUpload() {
+        document.getElementById("fileInput").click();
+    }
+</script>

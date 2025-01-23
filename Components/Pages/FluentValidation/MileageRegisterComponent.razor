@@ -1,0 +1,139 @@
+﻿@using Blazored.FluentValidation
+
+<EditForm Model="@MileageRegister" OnValidSubmit="@SubmitFormm">
+    <FluentValidationValidator @ref="_fluentValidationValidatorM" />
+
+    <table class="table-container">
+        <caption class="table-caption">Kilometrówka  |  pojazd: @MileageRegister.PrivateCarRegistration</caption>
+        <thead>
+            <tr class="table-header-left">
+                <th style="width: 130px;">Data</th>
+                <th style="width: 220px;">Opis trasy</th>
+                <th style="width: 220px;">Cel przejazdu</th>
+                <th style="width: 120px;">Długość (km)</th>
+                <th style="width: 120px;">Akcje</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{var i = 0;
+                @foreach (var entry in MileageRegister.Entries)
+                {
+
+                    <tr>
+                        <td>
+                            <FluentDatePicker @bind-Date="@entry.Date" Style="width: 130px;" Disabled="@Disabled"/>
+                            <FluentValidationMessage For="@(() => entry.Date)" class="validation-error" />
+                        </td>
+                        <td>
+                            <FluentTextField @bind-Value="@entry.RouteDescription" Style="width: 220px;" Disabled="@Disabled" />
+                            <FluentValidationMessage For="@(() => entry.RouteDescription)" class="validation-error" />
+                        </td>
+                        <td>
+                            <FluentTextField @bind-Value="@entry.Purpose" Style="width: 220px;" Disabled="@Disabled" />
+                        </td>
+                        <td>
+                            <FluentNumberField @bind-Value="@entry.Mileage" 
+                            @bind-Value:after="@HandleMileageChange"        
+                            Style="width: 120px;"
+                            Disabled="@Disabled" />
+                        </td>
+                        <td>
+                            <div>
+                                @{
+                                    var entryRemId = $"entryRemId{entry.Id}";
+                                }
+                                <FluentButton Id="@entryRemId" IconEnd="@(new Icons.Filled.Size20.Delete())" OnClick="@(() => RemoveEntry(entry))" Disabled="@Disabled" />
+                                <FluentTooltip Anchor="@entryRemId" HideTooltipOnCursorLeave="true" Position=TooltipPosition.Right Delay=50>Usuń przejazd</FluentTooltip>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+    <div>
+        <FluentButton Id="AddEntryId" IconEnd="@(new Icons.Regular.Size20.Add())" OnClick="@(() => AddEntry())" Disabled="@Disabled" />
+        <FluentTooltip Anchor="AddEntryId" HideTooltipOnCursorLeave="true" Position=TooltipPosition.Right Delay=50>Dodaj przejazd</FluentTooltip>
+    </div>
+
+    <div>
+        <span> INFORMACJA TESTOWA: 
+            <label>Przebieg całkowity: </label>
+            <span>@MileageRegister.Entries.Sum(e => e.Mileage)</span>
+
+            <label>WArtość do wypłaty: </label>
+            <span>@(MileageRegister.Entries.Sum(e => e.Mileage)*MileageRegister.MileageAllowanceRate)</span>
+        </span>
+    </div>
+    <FluentValidationSummary />
+    <button type="submit">ValidateComponentManualy</button>
+</EditForm>
+
+
+@code {
+    [Parameter] public MileageRegister MileageRegister { get; set; }
+    [Parameter] public string EmployeeLongName {get; set;}
+    [Parameter] public string EmployeeEmpId { get; set; }
+    [Parameter] public decimal? TotalMileage { get; set; }
+    [Parameter] public decimal? TotalValue { get; set; }
+    [Parameter] public bool Disabled { get; set; } = false;
+    private EditContext _editContext;
+    private FluentValidationValidator? _fluentValidationValidatorM;
+
+    protected override async Task OnInitializedAsync()
+    {
+        MileageRegister.EmployeeName = EmployeeLongName;
+        MileageRegister.EmployeeEmpId = EmployeeEmpId;
+        MileageRegister.TotalMileage = TotalMileage;
+        MileageRegister.TotalValue = TotalValue;
+        if(MileageRegister.Entries.Count == 0){
+            MileageRegister.Entries = new List<MileageRegisterEntry>();
+        }
+        _editContext = new EditContext(MileageRegister);
+
+    }
+
+    protected override void OnParametersSet()
+    {
+        CalculateTotals();
+    }
+
+    private void CalculateTotals()
+    {
+        if (MileageRegister?.Entries != null)
+        {
+            MileageRegister.TotalMileage = MileageRegister.Entries.Sum(e => e.Mileage);
+            MileageRegister.TotalValue = MileageRegister.TotalMileage * MileageRegister.MileageAllowanceRate;
+        }
+    }
+    private async Task HandleMileageChange(){
+        MileageRegister.TotalMileage = MileageRegister.Entries.Sum(e => e.Mileage);
+        MileageRegister.TotalValue = MileageRegister.TotalMileage * MileageRegister.MileageAllowanceRate;
+        StateHasChanged();
+    }
+    private async Task AddEntry()
+    {
+        MileageRegister.Entries.Add(new MileageRegisterEntry()
+            {
+                Id = MileageRegister.Entries.Count() + 1,
+
+
+            });
+    }
+
+    private async Task RemoveEntry (MileageRegisterEntry entry)
+    {
+        MileageRegister.Entries.Remove(entry);
+        await HandleMileageChange();
+    }
+
+    private void SubmitFormm() 
+    {
+        _editContext.Validate();
+    } 
+}
+    
+
+
+

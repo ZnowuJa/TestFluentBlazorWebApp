@@ -1,0 +1,53 @@
+﻿@page "/table2"
+
+<FluentCard style="max-width: 500px; margin: 0 auto; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border-radius: 8px; overflow: hidden;">
+    <table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif;">
+        <thead>
+            <tr class="table-header">
+                <th style="padding: 16px; border-bottom: 2px solid var(--neutral-light);">Description</th>
+                <th style="padding: 16px; border-bottom: 2px solid var(--neutral-light);">Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var row in TableData)
+            {
+                <tr style="background-color: @(row.Index % 2 == 0 ? "transparent" : "var(--neutral-lighter)");">
+                    <td style="padding: 16px; border-bottom: 1px solid var(--neutral);">@row.Description</td>
+                    <td style="padding: 16px; border-bottom: 1px solid var(--neutral-light);">@row.Value</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</FluentCard>
+
+@code {
+    private List<TableRow> TableData = new()
+    {
+        new TableRow("Stawka diety", "value1"),
+        new TableRow("Należna dieta za Etap", "value2"),
+        new TableRow("Potrącenie za posiłki", "value3"),
+        new TableRow("Ryczałt za nocleg", "value4"),
+        new TableRow("Ryczałt dojazdy lokalne", "value5"),
+        new TableRow("Ryczałt za tranzyt", "value6"),
+        new TableRow("Kilometrówka", "value7"),
+        new TableRow("Rachunki suma", "value8"),
+        new TableRow("Pobrana zaliczka", "value9"),
+        new TableRow("Kurs waluty", "value10"),
+        new TableRow("Razem w walucie", "value11"),
+        new TableRow("Razem w PLN", "value12")
+    };
+
+    public class TableRow
+    {
+        public string Description { get; set; }
+        public string Value { get; set; }
+        public int Index { get; set; }
+
+        public TableRow(string description, string value)
+        {
+            Description = description;
+            Value = value;
+            
+        }
+    }
+}

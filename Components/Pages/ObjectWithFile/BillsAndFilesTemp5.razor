@@ -1,0 +1,260 @@
+﻿@page "/files6"
+@inject IJSRuntime JS
+@inject IWebHostEnvironment Environment
+@inject NavigationManager _navigationManager
+
+<h3>BillsAndFiles</h3>
+
+<InputFile id="fileInput" OnChange="HandleFileUpload" accept=".png, .jpg, .pdf" style="display: none;" />
+
+<table class="fluent-table">
+    <caption class="fluent-caption">Posiłki zapewnione</caption>
+    <thead class="fluent-thead">
+        <tr>
+            <th style="width: 50px;">Lp.</th>
+            <th style="width: 125px;">Kwota brutto</th>
+            <th style="width: 150px;">Uzasadnienie</th>
+            <th style="width: 125px;">Załącznik</th>
+            <th style="width: 200px;">Pobierz załącznik</th>
+            <th style="width: 30px;"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var bill in billsList)
+        {
+            <tr class="fluent-row">
+                <td>@bill.Id</td>
+                <td>
+                    <FluentNumberField Min="0"
+                                       @bind-Value:get="@bill.Amount"
+                                       @bind-Value:set="(value => HandleBillChanged(bill, value))"
+                                       width="125px" />
+                </td>
+                <td>
+                    <FluentCombobox Items="@_billReasons"
+                                    @bind-Value="@bill.Reason"
+                                    AllowFreeform="false"
+                                    Placeholder="Wybierz lub wprowadź..."
+                                    Width="150px" />
+                </td>
+                <td>
+                    @if (string.IsNullOrEmpty(bill.FilePath))
+                    {
+                        <FluentButton OnClick="@(() => UploadFileForBill(bill))">Dodaj załącznik</FluentButton>
+                    }
+                    else
+                    {
+                        <span>@bill.OriginalFileName</span>
+                        <FluentButton OnClick="@(() => RemoveFileFromBill(bill))">Usuń załącznik</FluentButton>
+                    }
+                </td>
+                <td>
+                    @if (!string.IsNullOrEmpty(bill.AttUrl))
+                    {
+                        <a href="@bill.AttUrl" target="_blank">Pobierz załącznik</a>
+                    }
+                </td>
+                <td>
+                    <FluentButton IconEnd="@(new Icons.Filled.Size20.Delete())" OnClick="@(() => RemoveBill(bill))" />
+                    <FluentButton IconEnd="@(new Icons.Filled.Size20.Open())"
+                                  OnClick="@(() => ViewAttachment(bill.AttUrl))" />
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<FluentButton Id="addBill" IconEnd="@(new Icons.Regular.Size20.Add())" OnClick="@(() => AddBill())" />
+<FluentTooltip Anchor="addBill" HideTooltipOnCursorLeave="true" Position=TooltipPosition.Right Delay=50>
+    Dodaj rachunek lub bilet
+</FluentTooltip>
+
+<FluentButton Id="saveForm" Appearance="Appearance.Accent" OnClick="SaveForm">Save Form</FluentButton>
+
+@code {
+    List<Bill> billsList { get; set; } = new();
+    private IQueryable<string> _billReasons = Enum.GetValues(typeof(BillReasons))
+        .Cast<BillReasons>().Select(c => c.ToString()).AsQueryable();
+    Bill? currentBillForUpload;
+    string FormNumber = $"BILL{DateTime.Now:yyyyMMddHHmmss}";
+
+    /*
+     * Jak to ma działać?
+     * W Razorze potrzebujemy te trzy injecty:
+     *      @inject IJSRuntime JS
+     *      @inject IWebHostEnvironment Environment
+     *      @inject NavigationManager _navigationManager
+     * Objekt z którym kojarzymy plik musi mieć te 3 pola (może interfejs/dziedziczenie?):
+     *      public string? FilePath { get; set; }
+     *      public string? AttUrl { get; set; }
+     *      public string? OriginalFileName { get; set; }
+     *
+     * Poniższe metody są kluczowe:
+     *      HandleFileUpload - wrzuca plik to tymczasowego folderu i wraca ścieżkę 
+     *      UplodaFileForBill - uruchamia JS funkcje na dole która uruchamia kontrolkę InputBase
+     */
+
+
+
+    private async Task HandleFileUpload(InputFileChangeEventArgs e)
+    {
+        if (currentBillForUpload != null)
+        {
+            var uploadedFile = e.File;
+            if (uploadedFile != null)
+            {
+                currentBillForUpload.FilePath = await FileUtils.UploadFile(uploadedFile, currentBillForUpload.Id.ToString(), Environment.WebRootPath);
+                currentBillForUpload.OriginalFileName = uploadedFile.Name;
+                currentBillForUpload.AttUrl = FileUtils.GenerateUrl(currentBillForUpload.FilePath, Environment.WebRootPath);
+            }
+        }
+    }
+
+    void UploadFileForBill(Bill bill)
+    {
+        currentBillForUpload = bill;
+        JS.InvokeVoidAsync("triggerFileUpload");
+    }
+
+    void RemoveFileFromBill(Bill bill)
+    {
+        FileUtils.RemoveFile(bill.FilePath);
+        bill.FilePath = null;
+        bill.OriginalFileName = null;
+        bill.AttUrl = null;
+    }
+
+    private void HandleBillChanged(Bill bill, decimal value)
+    {
+        bill.Amount = value;
+    }
+
+    private void RemoveBill(Bill bill)
+    {
+        RemoveFileFromBill(bill);
+        billsList.Remove(bill);
+    }
+
+    private void AddBill()
+    {
+        billsList.Add(new Bill
+            {
+                Id = billsList.Count + 1
+            });
+    }
+    private async Task ViewAttachment(string url)
+    {
+        // Navigate to the URL in a new tab
+
+        string url2 = _navigationManager.BaseUri + url;
+        await JS.InvokeVoidAsync("open", url, "_blank");
+    }
+
+    private void SaveForm()
+    {
+        foreach (var bill in billsList)
+        {
+            if (!string.IsNullOrEmpty(bill.FilePath))
+            {
+                var newFilePath = Path.Combine(
+                    Environment.WebRootPath,
+                    "BILLS",
+                    FormNumber.Substring(4, 8),
+                    $"{Guid.NewGuid()}_{bill.Id}{Path.GetExtension(bill.FilePath)}");
+
+                FileUtils.MoveFile(bill.FilePath, newFilePath);
+                bill.FilePath = newFilePath;
+
+                // Update the public-facing URL for the file.
+                bill.AttUrl = FileUtils.GenerateUrl(newFilePath, Environment.WebRootPath);
+            }
+        }
+
+        // Save the form to the database or perform another action.
+    }
+
+    // private string GeneratePublicUrl(string filePath)
+    // {
+    //     // Generate a public-facing URL for the given file path.
+    //     var relativePath = filePath.Replace(Environment.WebRootPath, "").Replace("\\", "/");
+    //     return $"/{relativePath.TrimStart('/')}";
+    // }
+}
+<script>
+    function triggerFileUpload() {
+        document.getElementById("fileInput").click();
+    }
+</script>
+
+@*
+The mechanism for opening the file browser on this page relies on the interaction between the Blazor component and JavaScript. Here’s a step-by-step explanation of how it works:
+
+### Step-by-Step Explanation
+
+1. **User Clicks the Button**  
+   The user clicks a button in the Razor component, which triggers the `UploadFileForBill` method. This method sets `currentBillForUpload` to the appropriate `Bill` object and invokes the JavaScript function `triggerFileUpload` via Blazor's `IJSRuntime`.
+
+   ```csharp
+   void UploadFileForBill(Bill bill)
+   {
+       currentBillForUpload = bill;
+       JS.InvokeVoidAsync("triggerFileUpload");
+   }
+   ```
+
+2. **JavaScript Function Executes**  
+   The `triggerFileUpload` JavaScript function is defined in the `<script>` block. It selects the hidden file input element (`<InputFile id="fileInput">`) and calls its `.click()` method.
+
+   ```javascript
+   function triggerFileUpload() {
+       document.getElementById("fileInput").click();
+   }
+   ```
+
+   This programmatically triggers a click event on the file input, which is equivalent to a user manually clicking on it.
+
+3. **File Browser Opens**  
+   The browser automatically opens the file picker dialog because the `click()` method was called on the `<InputFile>` element. This behavior is built into the browser for file input elements.
+
+4. **User Selects a File**  
+   When the user selects a file in the file browser, the `OnChange` event for the `<InputFile>` element is triggered.
+
+   ```razor
+   <InputFile id="fileInput" OnChange="HandleFileUpload" accept=".png, .jpg, .pdf" style="display: none;" />
+   ```
+
+   The `HandleFileUpload` method in the Blazor component is then executed, receiving the selected file(s) via the `InputFileChangeEventArgs`.
+
+   ```csharp
+   private async Task HandleFileUpload(InputFileChangeEventArgs e)
+   {
+       if (currentBillForUpload != null)
+       {
+           var uploadedFile = e.File;
+           if (uploadedFile != null)
+           {
+               currentBillForUpload.FilePath = await FileUtils.UploadFile(uploadedFile, currentBillForUpload.Id.ToString(), Environment.WebRootPath);
+               currentBillForUpload.OriginalFileName = uploadedFile.Name;
+               currentBillForUpload.AttUrl = GeneratePublicUrl(currentBillForUpload.FilePath);
+           }
+       }
+   }
+   ```
+
+5. **File is Uploaded**  
+   - `HandleFileUpload` uses the `FileUtils.UploadFile` method to save the file to a temporary directory on the server.
+   - The file's metadata, such as the file path, original file name, and a generated public URL, is stored in the current bill object.
+
+6. **File is Associated with the Bill**  
+   The page updates dynamically, showing the file name and providing options to remove or download the uploaded file.
+
+---
+
+### Why Does It Work?
+
+- The `click()` method on an `<input type="file">` element is a standard way to programmatically open the file browser.
+- The `<InputFile>` component in Blazor binds the file selection event to the `HandleFileUpload` method via the `OnChange` event.
+- Blazor handles the interaction between JavaScript and C# seamlessly through `IJSRuntime`.
+
+This combination of JavaScript and Blazor enables a smooth user experience for uploading files while keeping the Razor component logic in C#.
+*@

@@ -1,0 +1,38 @@
+﻿@page "/json"
+@using System.Text.Json
+
+<h3>SerializeComplexObject</h3>
+
+Serialized bill:
+@serializedBill
+
+@code {
+    private Bill2 bill { get; set; }
+    private Location location { get; set; }
+    private string? serializedBill { get; set; }
+
+
+
+    protected override async Task OnInitializedAsync(){
+
+        location = new()
+        {
+            Name = "Praca",
+            SapNumber = "123456"
+        };
+        bill = new()
+        {
+            Id = 1,
+            Amount = 10.10m,
+            Reason = "Potrzbne",
+            FilePath = "jakis path",
+            AttUrl = "jakis url",
+            OriginalFileName = "nazwa pliku 2",
+            Location = location
+        };
+
+        serializedBill = JsonSerializer.Serialize(bill);
+
+
+    }
+}
