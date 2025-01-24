@@ -1,7 +1,7 @@
 ﻿@using Blazored.FluentValidation
 
-<EditForm Model="@MileageRegister" OnValidSubmit="@SubmitFormm">
-    <FluentValidationValidator @ref="_fluentValidationValidatorM" />
+<EditForm EditContext="@ParentEditContext" OnValidSubmit="@SubmitFormm">
+   @*  <FluentValidationValidator /> *@
 
     <table class="table-container">
         <caption class="table-caption">Kilometrówka  |  pojazd: @MileageRegister.PrivateCarRegistration</caption>
@@ -78,10 +78,12 @@
     [Parameter] public decimal? TotalMileage { get; set; }
     [Parameter] public decimal? TotalValue { get; set; }
     [Parameter] public bool Disabled { get; set; } = false;
-    // [Parameter] public FluentValidationValidator ValidatorForForm { get; set; }
+
+    [Parameter] public EditContext ParentEditContext { get; set; }
+
 
     private EditContext _editContext;
-    private FluentValidationValidator? _fluentValidationValidatorM;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -94,7 +96,7 @@
             var newEntry = new MileageRegisterEntry();
             MileageRegister.Entries.Add(newEntry);
         }
-        _editContext = new EditContext(MileageRegister);
+        // _editContext = new EditContext(MileageRegister);
 
     }
 
@@ -134,7 +136,7 @@
 
     private void SubmitFormm() 
     {
-        _editContext.Validate();
+        // _editContext.Validate();
     } 
 }
     

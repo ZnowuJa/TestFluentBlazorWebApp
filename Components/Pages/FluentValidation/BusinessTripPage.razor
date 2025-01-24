@@ -8,18 +8,20 @@
 <EditForm EditContext="_editContext" OnValidSubmit="HandleValidSubmit">
     @* <DataAnnotationsValidator /> *@
     <FluentValidationValidator @ref="_fluentValidationValidator" />
+    
     <FluentTextField @bind-Value=@formItem.EmployeeName/>
     <FluentValidationMessage For="() => formItem.EmployeeName"/>
-    
-        <MileageRegisterComponent MileageRegister="@formItem.MileageRegister"
-            EmployeeLongName="@formItem.EmployeeName"
-            EmployeeEmpId="123"
-            Disabled="false" 
-            
-            />
-
     <p></p>
-    Jakiś tekst co gdzie jest
+    Pierwszy
+    <MileageRegisterComponent 
+        ParentEditContext="_editContext"
+        MileageRegister="@formItem.MileageRegister"
+        EmployeeLongName="@formItem.EmployeeName"
+        EmployeeEmpId="123"
+        Disabled="false" 
+    />
+
+    Reszta formularza
     <FluentValidationSummary class="validation-error"/>
     <button type="submit">ValidatePage</button>
 </EditForm>
@@ -29,6 +31,8 @@
     private EditContext _editContext;
     private FluentValidationValidator? _fluentValidationValidator;
     private BusinessTrip formItem = new BusinessTrip();
+
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -40,6 +44,7 @@
 
     private void HandleValidSubmit()
     {
+
         _editContext.Validate();
         Console.WriteLine("Form Submitted Successfully!");
     }
