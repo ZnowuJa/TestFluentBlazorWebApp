@@ -1,0 +1,61 @@
+﻿@page "/pageone"
+
+@using FluentValidation
+@using Blazored.FluentValidation
+
+<h3>BusinessTrip</h3>
+
+<EditForm EditContext="_editContext" OnValidSubmit="HandleValidSubmit">
+    @* <DataAnnotationsValidator /> *@
+    <FluentValidationValidator @ref="_fluentValidationValidator" />
+    
+    <FluentTextField @bind-Value=@formItem.EmployeeName/>
+    <FluentValidationMessage For="() => formItem.EmployeeName"/>
+    <p></p>
+    Pierwszy
+    <MileageRegisterComponent 
+        ParentEditContext="_editContext"
+        MileageRegister="@formItem.MileageRegister"
+        EmployeeLongName="@formItem.EmployeeName"
+        EmployeeEmpId="123"
+        Disabled="false" 
+    />
+
+    Reszta formularza
+    <FluentValidationSummary class="validation-error"/>
+    <button type="submit">ValidatePage</button>
+</EditForm>
+
+
+@code {
+    private EditContext _editContext;
+    private FluentValidationValidator? _fluentValidationValidator;
+    private BusinessTrip formItem = new BusinessTrip();
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        formItem.MileageRegister = new MileageRegister();
+        // formItem.EmployeeName = "John Jhn Oh John";
+        formItem.EmployeeName = string.Empty;
+        _editContext = new EditContext(formItem);
+    }
+
+    private void HandleValidSubmit()
+    {
+
+        _editContext.Validate();
+        Console.WriteLine("Form Submitted Successfully!");
+    }
+    
+}
+<style>
+
+    .validation-error {
+        color: red;
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+
+</style>

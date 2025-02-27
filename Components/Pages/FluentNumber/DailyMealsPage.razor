@@ -1,0 +1,37 @@
+﻿@page "/businesstravel"
+
+
+<h3>DailyMeal_Page</h3>
+
+<DailyMeal_EditComponent _content="dailyMeals" OnDailyMealChanged="HandleDailyMealChanged" />
+
+@code {
+    private List<DailyMeal> dailyMeals = new List<DailyMeal>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        for (int i = 1; i <= 10; i++)
+        {
+            dailyMeals.Add(new DailyMeal { 
+                StageId = i, 
+                CountryCode = $"FR{i}", 
+                CountryName =  $"Country Name {i}",
+                AllowanceRate = 1.3m*i,
+                AllowanceRateCurrency = $"EUR{i}",
+                Duration = 4,
+                Nights = 4
+            });
+        };
+
+
+        StateHasChanged();
+        // return base.OnInitializedAsync();
+    }
+
+    private void HandleDailyMealChanged(List<DailyMeal> updatedMeals)
+    {
+        dailyMeals = updatedMeals;
+        StateHasChanged();
+    }
+}
