@@ -1,6 +1,6 @@
 ﻿
 <h3>DailyMeal EditComponent - with HideStep = "true"</h3>
-
+<div @onkeydown="HandleKeyPress" tabindex="0">
 <table class="table-container">
     <thead>
         <tr class="table-caption">
@@ -86,16 +86,27 @@
         }
     </tbody>
 </table>
-
+</div>
+MethodCallsCounter: @methodCallsCounter  |  Tab pressed: @tabCount times
 @code {
     [Parameter] public List<DailyMeal> _content { get; set; }
     [Parameter] public EventCallback<List<DailyMeal>> OnDailyMealChanged { get; set; }
     private Timer _debounceTimer;
+    private int methodCallsCounter = 0;
+    private int tabCount = 0;
 
     protected override async Task OnInitializedAsync()
     {
         Console.WriteLine(_content.Count);
         // StateHasChanged();
+    }
+    private void HandleKeyPress(KeyboardEventArgs e)
+    {
+        if (e.Key == "Tab")
+        {
+            tabCount++;
+
+        }
     }
     private void HandleDebouncedChange(ChangeEventArgs e, DailyMeal meal, string propertyName)
     {
@@ -111,6 +122,7 @@
     }
     private async Task HandleMealPropertyChange2(DailyMeal meal, string propertyName)
     {
+        methodCallsCounter++;
         var property = meal.GetType().GetProperty(propertyName);
         if (property != null && property.CanWrite)
         {
@@ -126,6 +138,7 @@
     }
     private async Task HandleMealPropertyChange(ChangeEventArgs e, DailyMeal meal, string propertyName)
     {
+        methodCallsCounter++;
         if (int.TryParse(e.Value.ToString(), out int newValue))
         {
             var property = meal.GetType().GetProperty(propertyName);

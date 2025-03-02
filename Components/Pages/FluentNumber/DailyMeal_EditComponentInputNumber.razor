@@ -1,6 +1,6 @@
 ﻿
 <h3>DailyMeal_EditComponent with InputNumber</h3>
-
+<div @onmousedown="HandleClick">
 <table class="table-container">
     <thead>
         <tr class="table-caption">
@@ -83,16 +83,24 @@
         }
     </tbody>
 </table>
+</div>
+MethodCallsCounter: @methodCallsCounter  |  MouseClicks: @mouseClicksCount
 
 @code {
     [Parameter] public List<DailyMeal> _content { get; set; }
     [Parameter] public EventCallback<List<DailyMeal>> OnDailyMealChanged { get; set; }
     private Timer _debounceTimer;
+    private int methodCallsCounter = 0;
+    private int mouseClicksCount = 0;
 
     protected override async Task OnInitializedAsync()
     {
         Console.WriteLine(_content.Count);
         StateHasChanged();
+    }
+    private void HandleClick(MouseEventArgs e)
+    {
+        mouseClicksCount++;
     }
     private void HandleDebouncedChange(ChangeEventArgs e, DailyMeal meal, string propertyName)
     {
@@ -108,6 +116,7 @@
     }
     private async Task HandleMealPropertyChange2(DailyMeal meal, string propertyName)
     {
+        methodCallsCounter++;
         var property = meal.GetType().GetProperty(propertyName);
         if (property != null && property.CanWrite)
         {
@@ -123,6 +132,7 @@
     }
     private async Task HandleMealPropertyChange(ChangeEventArgs e, DailyMeal meal, string propertyName)
     {
+        methodCallsCounter++;
         if (int.TryParse(e.Value.ToString(), out int newValue))
         {
             var property = meal.GetType().GetProperty(propertyName);
