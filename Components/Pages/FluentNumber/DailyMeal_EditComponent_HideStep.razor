@@ -1,5 +1,5 @@
 ﻿
-<h3>DailyMeal_EditComponent</h3>
+<h3>DailyMeal EditComponent - with HideStep = "true"</h3>
 
 <table class="table-container">
     <thead>
@@ -43,23 +43,23 @@
                     <td>
                         <div style="min-width: 100px;">
                             <FluentNumberField Id="breakId"
-                                         Min="0"
-                                         
-                                         Max="@meal.Duration.ToString()"
-                                         ValueExpression="() => meal.CoveredBreakfasts"
-                                         Value="@meal.CoveredBreakfasts"
-                                         @onchange="@(e => HandleMealPropertyChange(e, meal, nameof(meal.CoveredBreakfasts)))" />
+                                               HideStep="true"
+                                               Min="0"
+                                               Max="@meal.Duration.ToString()"
+                                               ValueExpression="() => meal.CoveredBreakfasts"
+                                               Value="@meal.CoveredBreakfasts"
+                                               @onchange="@(e => HandleMealPropertyChange(e, meal, nameof(meal.CoveredBreakfasts)))" />
                         </div>
                     </td>
                     <td>
                         <div style="min-width: 100px;">
                             <FluentNumberField Id="lunchId"
-                                         Min="0"
-                                               
-                                         Max="@meal.Duration.ToString()"
-                                         ValueExpression="() => meal.CoveredLunches"
-                                         Value="@meal.CoveredLunches"
-                                         @onchange="@(e => HandleMealPropertyChange(e, meal, nameof(meal.CoveredLunches)))" />
+                                               HideStep="true"
+                                               Min="0"
+                                               Max="@meal.Duration.ToString()"
+                                               ValueExpression="() => meal.CoveredLunches"
+                                               Value="@meal.CoveredLunches"
+                                               @onchange="@(e => HandleMealPropertyChange(e, meal, nameof(meal.CoveredLunches)))" />
                         </div>
                     </td>
                     <td>
@@ -71,9 +71,8 @@
                                     Value="@meal.CoveredDinners"
                                     @onchange="@(e => HandleMealPropertyChange(e, meal, nameof(meal.CoveredDinners)))" />  *@
 
-                            <FluentNumberField 
+                            <FluentNumberField HideStep="true" 
                                                Min="0"
-                                               
                                                Max="@meal.Duration.ToString()"
                                                @bind-Value:get="@meal.CoveredDinners"
                                                @bind-Value:set="(e => HandleMealPropertyChange2(meal, nameof(meal.CoveredDinners)))" />
@@ -150,8 +149,8 @@
                    ValueExpression="() => meal.CoveredLunches"
                    Value="@meal.CoveredDinners"
                    @onchange="@(e => HandleMealPropertyChange(e, meal, nameof(meal.CoveredDinners)))" /> 
-                   
-                   
-                   
-                   
+
+
+
+
 *@

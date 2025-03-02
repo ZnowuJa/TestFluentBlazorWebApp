@@ -1,5 +1,5 @@
 ﻿
-<h3>DailyMeal_EditComponent</h3>
+<h3>DailyMeal_EditComponent with InputNumber</h3>
 
 <table class="table-container">
     <thead>
@@ -42,41 +42,37 @@
                     <td>@meal.CountryName</td>
                     <td>
                         <div style="min-width: 100px;">
-                            <FluentNumberField Id="breakId"
-                                         Min="0"
-                                         
-                                         Max="@meal.Duration.ToString()"
-                                         ValueExpression="() => meal.CoveredBreakfasts"
-                                         Value="@meal.CoveredBreakfasts"
-                                         @onchange="@(e => HandleMealPropertyChange(e, meal, nameof(meal.CoveredBreakfasts)))" />
+                            <InputNumber Id="breakId"
+                                               Min="0"
+                                               Max="@meal.Duration.ToString()"
+                                         @bind-Value="@meal.CoveredBreakfasts"
+                                         @bind-Value:event="@onchange"
+                                               @onchange="@(e => HandleMealPropertyChange(e, meal, nameof(meal.CoveredBreakfasts)))" />
                         </div>
                     </td>
                     <td>
                         <div style="min-width: 100px;">
-                            <FluentNumberField Id="lunchId"
-                                         Min="0"
-                                               
-                                         Max="@meal.Duration.ToString()"
-                                         ValueExpression="() => meal.CoveredLunches"
-                                         Value="@meal.CoveredLunches"
-                                         @onchange="@(e => HandleMealPropertyChange(e, meal, nameof(meal.CoveredLunches)))" />
+                            <InputNumber Id="lunchId"
+                                               Min="0"
+                                               Max="@meal.Duration.ToString()"
+                                         @bind-Value="@meal.CoveredLunches"
+                                         @bind-Value:event="@onchange"
+                                               @onchange="@(e => HandleMealPropertyChange(e, meal, nameof(meal.CoveredLunches)))" />
                         </div>
                     </td>
                     <td>
                         <div style="min-width: 100px;">
-                            @*<FluentNumberField Id="dinnerId"
+                            <InputNumber Id="dinnerId"
                                     Min="0"
                                     Max="@meal.Duration.ToString()"
-                                    ValueExpression="() => meal.CoveredLunches"
-                                    Value="@meal.CoveredDinners"
-                                    @onchange="@(e => HandleMealPropertyChange(e, meal, nameof(meal.CoveredDinners)))" />  *@
+                                    @bind-Value="@meal.CoveredDinners"
+                                    @bind-Value:event="@onchange"
+                                    @onchange="@(e => HandleMealPropertyChange(e, meal, nameof(meal.CoveredDinners)))" /> 
 
-                            <FluentNumberField 
-                                               Min="0"
-                                               
+                            @* <FluentNumberField Min="0"
                                                Max="@meal.Duration.ToString()"
                                                @bind-Value:get="@meal.CoveredDinners"
-                                               @bind-Value:set="(e => HandleMealPropertyChange2(meal, nameof(meal.CoveredDinners)))" />
+                                               @bind-Value:set="(e => HandleMealPropertyChange2(meal, nameof(meal.CoveredDinners)))" />*@ 
                         </div>
                     </td>
                     <td>@meal.Total</td>
@@ -96,7 +92,7 @@
     protected override async Task OnInitializedAsync()
     {
         Console.WriteLine(_content.Count);
-        // StateHasChanged();
+        StateHasChanged();
     }
     private void HandleDebouncedChange(ChangeEventArgs e, DailyMeal meal, string propertyName)
     {
@@ -150,8 +146,8 @@
                    ValueExpression="() => meal.CoveredLunches"
                    Value="@meal.CoveredDinners"
                    @onchange="@(e => HandleMealPropertyChange(e, meal, nameof(meal.CoveredDinners)))" /> 
-                   
-                   
-                   
-                   
+
+
+
+
 *@

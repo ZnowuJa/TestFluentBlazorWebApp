@@ -5,13 +5,25 @@
 
 <DailyMeal_EditComponent _content="dailyMeals" OnDailyMealChanged="HandleDailyMealChanged" />
 
+<h3>Total:  @dailyMeals.Sum(meal => meal.Total);</h3>
+
+<DailyMeal_EditComponent_HideStep _content="dailyMealsHideStep" OnDailyMealChanged="HandleDailyMealChangedHideStep" />
+
+<h3>Total:  @dailyMealsHideStep.Sum(meal => meal.Total);</h3>
+
+<DailyMeal_EditComponentInputNumber _content="dailyMealsInputNumber" OnDailyMealChanged="HandleDailyMealChangedInputNumber" />
+
+<h3>Total:  @dailyMealsInputNumber.Sum(meal => meal.Total);</h3>
+
 @code {
     private List<DailyMeal> dailyMeals = new List<DailyMeal>();
+    private List<DailyMeal> dailyMealsHideStep = new List<DailyMeal>();
+    private List<DailyMeal> dailyMealsInputNumber = new List<DailyMeal>();
 
 
     protected override async Task OnInitializedAsync()
     {
-        for (int i = 1; i <= 10; i++)
+        for (int i = 1; i <= 3; i++)
         {
             dailyMeals.Add(new DailyMeal { 
                 StageId = i, 
@@ -23,15 +35,52 @@
                 Nights = 4
             });
         };
+        for (int i = 1; i <= 3; i++)
+        {
+            dailyMealsHideStep.Add(new DailyMeal
+                {
+                    StageId = i,
+                    CountryCode = $"FR{i}",
+                    CountryName = $"Country Name {i}",
+                    AllowanceRate = 1.3m * i,
+                    AllowanceRateCurrency = $"EUR{i}",
+                    Duration = 4,
+                    Nights = 4
+                });
+        };
+        for (int i = 1; i <= 3; i++)
+        {
+            dailyMealsInputNumber.Add(new DailyMeal
+                {
+                    StageId = i,
+                    CountryCode = $"FR{i}",
+                    CountryName = $"Country Name {i}",
+                    AllowanceRate = 1.3m * i,
+                    AllowanceRateCurrency = $"EUR{i}",
+                    Duration = 4,
+                    Nights = 4
+                });
+        };
 
-
-        StateHasChanged();
+        
         // return base.OnInitializedAsync();
     }
 
     private void HandleDailyMealChanged(List<DailyMeal> updatedMeals)
     {
         dailyMeals = updatedMeals;
-        StateHasChanged();
+        
+    }
+
+    private void HandleDailyMealChangedHideStep(List<DailyMeal> updatedMeals)
+    {
+        dailyMealsHideStep = updatedMeals;
+        
+    }
+
+    private void HandleDailyMealChangedInputNumber(List<DailyMeal> updatedMeals)
+    {
+        dailyMealsInputNumber = updatedMeals;
+
     }
 }
