@@ -1,88 +1,80 @@
 ﻿
 <h3>DailyMeal_EditComponent with InputNumber</h3>
 <div @onmousedown="HandleClick">
-<table class="table-container">
-    <thead>
-        <tr class="table-caption">
-            <th style="text-align: left; border-right: none; font-size: large;" colspan="7">
-                Meals:
-                <FluentIcon Id="MealsInfoId"
-                            Value="@(new Icons.Regular.Size16.Info())"
-                            Color="Microsoft.FluentUI.AspNetCore.Components.Color.Fill" />
-            </th>
-            <th style="text-align: right; border-left: none; font-size: large;" colspan="1">
-                <FluentIcon Id="MealsInfoPictureId" Value="@(new Icons.Regular.Size24.SpatulaSpoon())" Color="Microsoft.FluentUI.AspNetCore.Components.Color.Fill" />
-            </th>
-        </tr>
-        <tr class="table-header-left">
-            <th>Stage</th>
-            <th>Country</th>
-            <th>Breakfasts</th>
-            <th>Lunches</th>
-            <th>Dinners</th>
-            <th>Cash <FluentIcon Id="MealsTotalDeductionId" Value="@(new Icons.Regular.Size16.Info())" Color="Microsoft.FluentUI.AspNetCore.Components.Color.Fill" /></th>
-            <th>Currency</th>
-            <th>Max days</th>
-        </tr>
-    </thead>
-    <tbody>
-        @{
-            var mealId = 0;
-        }
-        @foreach (var meal in _content)
-        {
-            mealId++;
-            var breakId = $"break_{mealId}";
-            var lunchId = $"lunch_{mealId}";
-            var dinnerId = $"dinner_{mealId}";
-            @if (meal.Duration > 0)
-            {
-                <tr>
-                    <td>@meal.StageId</td>
-                    <td>@meal.CountryName</td>
-                    <td>
-                        <div style="min-width: 100px;">
-                            <InputNumber Id="breakId"
-                                               Min="0"
-                                               Max="@meal.Duration.ToString()"
-                                         @bind-Value="@meal.CoveredBreakfasts"
-                                         @bind-Value:event="@onchange"
-                                               @onchange="@(e => HandleMealPropertyChange(e, meal, nameof(meal.CoveredBreakfasts)))" />
-                        </div>
-                    </td>
-                    <td>
-                        <div style="min-width: 100px;">
-                            <InputNumber Id="lunchId"
-                                               Min="0"
-                                               Max="@meal.Duration.ToString()"
-                                         @bind-Value="@meal.CoveredLunches"
-                                         @bind-Value:event="@onchange"
-                                               @onchange="@(e => HandleMealPropertyChange(e, meal, nameof(meal.CoveredLunches)))" />
-                        </div>
-                    </td>
-                    <td>
-                        <div style="min-width: 100px;">
-                            <InputNumber Id="dinnerId"
-                                    Min="0"
-                                    Max="@meal.Duration.ToString()"
-                                    @bind-Value="@meal.CoveredDinners"
-                                    @bind-Value:event="@onchange"
-                                    @onchange="@(e => HandleMealPropertyChange(e, meal, nameof(meal.CoveredDinners)))" /> 
-
-                            @* <FluentNumberField Min="0"
-                                               Max="@meal.Duration.ToString()"
-                                               @bind-Value:get="@meal.CoveredDinners"
-                                               @bind-Value:set="(e => HandleMealPropertyChange2(meal, nameof(meal.CoveredDinners)))" />*@ 
-                        </div>
-                    </td>
-                    <td>@meal.Total</td>
-                    <td>@meal.AllowanceRateCurrency</td>
-                    <td>@meal.Duration</td>
-                </tr>
+    <table class="table-container">
+        <thead>
+            <tr class="table-caption">
+                <th style="text-align: left; border-right: none; font-size: large;" colspan="7">
+                    Meals:
+                    <FluentIcon Id="MealsInfoId"
+                    Value="@(new Icons.Regular.Size16.Info())"
+                    Color="Microsoft.FluentUI.AspNetCore.Components.Color.Fill" />
+                </th>
+                <th style="text-align: right; border-left: none; font-size: large;" colspan="1">
+                    <FluentIcon Id="MealsInfoPictureId" Value="@(new Icons.Regular.Size24.SpatulaSpoon())" Color="Microsoft.FluentUI.AspNetCore.Components.Color.Fill" />
+                </th>
+            </tr>
+            <tr class="table-header-left">
+                <th>Stage</th>
+                <th>Country</th>
+                <th>Breakfasts</th>
+                <th>Lunches</th>
+                <th>Dinners</th>
+                <th>Cash <FluentIcon Id="MealsTotalDeductionId" Value="@(new Icons.Regular.Size16.Info())" Color="Microsoft.FluentUI.AspNetCore.Components.Color.Fill" /></th>
+                <th>Currency</th>
+                <th>Max days</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                var mealId = 0;
             }
-        }
-    </tbody>
-</table>
+            @foreach (var meal in _content)
+            {
+                mealId++;
+                var breakId = $"break_{mealId}";
+                var lunchId = $"lunch_{mealId}";
+                var dinnerId = $"dinner_{mealId}";
+                @if (meal.Duration > 0)
+                {
+                    <tr>
+                        <td>@meal.StageId</td>
+                        <td>@meal.CountryName</td>
+                        <td>
+                            <div style="min-width: 100px;">
+                                <InputNumber Id="@breakId"
+                                Min="0"
+                                Max="@meal.Duration.ToString()"
+                                @bind-Value:get="@meal.CoveredBreakfasts"
+                                @bind-Value:set="(value => HandleMealChanged(meal, value, nameof(meal.CoveredBreakfasts)))" />
+                            </div>
+                        </td>
+                        <td>
+                            <div style="min-width: 100px;">
+                                <InputNumber Id="@lunchId"
+                                Min="0"
+                                Max="@meal.Duration.ToString()"
+                                @bind-Value:get="@meal.CoveredLunches"
+                                @bind-Value:set="(value => HandleMealChanged(meal, value, nameof(meal.CoveredLunches)))" />
+                            </div>
+                        </td>
+                        <td>
+                            <div style="min-width: 100px;">
+                                <InputNumber Id="@dinnerId"
+                                Min="0"
+                                Max="@meal.Duration.ToString()"
+                                @bind-Value:get="@meal.CoveredDinners"
+                                @bind-Value:set="(value => HandleMealChanged(meal, value, nameof(meal.CoveredDinners)))" />
+                            </div>
+                        </td>
+                        <td>@meal.Total</td>
+                        <td>@meal.AllowanceRateCurrency</td>
+                        <td>@meal.Duration</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
 </div>
 MethodCallsCounter: @methodCallsCounter  |  MouseClicks: @mouseClicksCount
 
@@ -102,62 +94,21 @@ MethodCallsCounter: @methodCallsCounter  |  MouseClicks: @mouseClicksCount
     {
         mouseClicksCount++;
     }
-    private void HandleDebouncedChange(ChangeEventArgs e, DailyMeal meal, string propertyName)
-    {
-        if (_debounceTimer != null)
-        {
-            _debounceTimer.Dispose();
-        }
-
-        _debounceTimer = new Timer(async _ =>
-        {
-            await InvokeAsync(() => HandleMealPropertyChange(e, meal, propertyName));
-        }, null, 50, Timeout.Infinite);
-    }
-    private async Task HandleMealPropertyChange2(DailyMeal meal, string propertyName)
+    private async Task HandleMealChanged(DailyMeal m, int v, string p)
     {
         methodCallsCounter++;
-        var property = meal.GetType().GetProperty(propertyName);
+        
+        var property = m.GetType().GetProperty(p);
         if (property != null && property.CanWrite)
         {
-            var currentValue = property.GetValue(meal);
-            var newValue = property.GetValue(meal); // Get the updated value directly from the property
-
-            if (!currentValue.Equals(newValue))
+            var currentValue = (int)property.GetValue(m);
+            if (currentValue != v)
             {
-                Console.WriteLine($"Updated value of {propertyName}: {newValue}");
+                property.SetValue(m, v);
                 await OnDailyMealChanged.InvokeAsync(_content);
             }
+            
         }
+        
     }
-    private async Task HandleMealPropertyChange(ChangeEventArgs e, DailyMeal meal, string propertyName)
-    {
-        methodCallsCounter++;
-        if (int.TryParse(e.Value.ToString(), out int newValue))
-        {
-            var property = meal.GetType().GetProperty(propertyName);
-            if (property != null && property.CanWrite)
-            {
-                var currentValue = property.GetValue(meal);
-                if (!currentValue.Equals(newValue))
-                {
-                    property.SetValue(meal, newValue);
-                    Console.WriteLine($"Updated value of {propertyName}: {newValue}");
-                    await OnDailyMealChanged.InvokeAsync(_content);
-                }
-            }
-        }
-    }
-}
-@* 
-<FluentNumberField Id="dinnerId"
-                   Min="0"
-                   Max="@meal.Duration.ToString()"
-                   ValueExpression="() => meal.CoveredLunches"
-                   Value="@meal.CoveredDinners"
-                   @onchange="@(e => HandleMealPropertyChange(e, meal, nameof(meal.CoveredDinners)))" /> 
-
-
-
-
-*@
+   }

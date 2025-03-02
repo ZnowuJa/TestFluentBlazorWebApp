@@ -42,7 +42,7 @@
                     <td>@meal.CountryName</td>
                     <td>
                         <div style="min-width: 100px;">
-                            <FluentNumberField Id="breakId"
+                            <FluentNumberField Id="@breakId"
                                                HideStep="true"
                                                Min="0"
                                                Max="@meal.Duration.ToString()"
@@ -53,7 +53,7 @@
                     </td>
                     <td>
                         <div style="min-width: 100px;">
-                            <FluentNumberField Id="lunchId"
+                            <FluentNumberField Id="@lunchId"
                                                HideStep="true"
                                                Min="0"
                                                Max="@meal.Duration.ToString()"
@@ -64,14 +64,8 @@
                     </td>
                     <td>
                         <div style="min-width: 100px;">
-                            @*<FluentNumberField Id="dinnerId"
-                                    Min="0"
-                                    Max="@meal.Duration.ToString()"
-                                    ValueExpression="() => meal.CoveredLunches"
-                                    Value="@meal.CoveredDinners"
-                                    @onchange="@(e => HandleMealPropertyChange(e, meal, nameof(meal.CoveredDinners)))" />  *@
-
-                            <FluentNumberField HideStep="true" 
+                            <FluentNumberField Id="@dinnerId"
+                                               HideStep="true" 
                                                Min="0"
                                                Max="@meal.Duration.ToString()"
                                                @bind-Value:get="@meal.CoveredDinners"
@@ -127,8 +121,7 @@ MethodCallsCounter: @methodCallsCounter  |  Tab pressed: @tabCount times
         if (property != null && property.CanWrite)
         {
             var currentValue = property.GetValue(meal);
-            var newValue = property.GetValue(meal); // Get the updated value directly from the property
-
+            var newValue = property.GetValue(meal); 
             if (!currentValue.Equals(newValue))
             {
                 Console.WriteLine($"Updated value of {propertyName}: {newValue}");
@@ -155,15 +148,3 @@ MethodCallsCounter: @methodCallsCounter  |  Tab pressed: @tabCount times
         }
     }
 }
-@* 
-<FluentNumberField Id="dinnerId"
-                   Min="0"
-                   Max="@meal.Duration.ToString()"
-                   ValueExpression="() => meal.CoveredLunches"
-                   Value="@meal.CoveredDinners"
-                   @onchange="@(e => HandleMealPropertyChange(e, meal, nameof(meal.CoveredDinners)))" /> 
-
-
-
-
-*@
